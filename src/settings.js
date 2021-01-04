@@ -1,6 +1,6 @@
 module.exports = {
 
-  title: '中德商城管理系统',
+  title: 'CE系统',
 
   /**
    * @type {boolean} true | false

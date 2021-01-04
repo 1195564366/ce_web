@@ -33,10 +33,6 @@ window.axios = axios;
  * Currently MockJs will be used in the production environment,
  * please remove it before going online ! ! !
  */
-// data: 'public/goodsImages/7305d36a05b69c2888db4e12ea0983a5.png'
-// data: {
-//   url: 'public/goodsImages/7305d36a05b69c2888db4e12ea0983a5.png'
-// }
 
 Vue.prototype.$fetchPost = post;
 Vue.prototype.$fetchGet = get;

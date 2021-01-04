@@ -69,45 +69,22 @@ export const constantRoutes = [
       path: 'index',
       name: 'index',
       component: () => import('@/views/shop'),
-      meta: { title: '店铺管理', icon: 'analysis' }
+      meta: { title: '我的店铺', icon: 'analysis' }
     }]
   },
 
   {
-    path: '/member',
+    path: '/bill',
     component: Layout,
-    redirect: '/member/manage',
-    children: [{
-      path: 'manage',
-      name: 'manage',
-      component: () => import('@/views/member/manage'),
-      meta: { title: '产品管理', icon: 'member' }
-    }]
-  },
-
-  {
-    path: '/order',
-    component: Layout,
-    redirect: '/order/index',
+    redirect: '/bill/index',
     children: [{
       path: 'index',
       name: 'index',
-      component: () => import('@/views/order/index'),
-      meta: { title: '账单管理', icon: 'order' }
+      component: () => import('@/views/bill'),
+      meta: { title: '我的账单', icon: 'analysis' }
     }]
   },
 
-  {
-    path: '/person',
-    component: Layout,
-    redirect: '/person/manage',
-    children: [{
-      path: 'manage',
-      name: 'manage',
-      component: () => import('@/views/person/manage'),
-      meta: { title: '发货记录', icon: 'home' }
-    }]
-  },
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }

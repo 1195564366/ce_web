@@ -11,13 +11,12 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <!-- <img :src="avatar + '?imageView2/1/w/80/h/80'" class="user-avatar" /> -->
           <span>{{ userInfo.phone }}</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
           <router-link to="/">
-            <el-dropdown-item> 首页 </el-dropdown-item>
+            <el-dropdown-item>首页</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="logout">
             <span style="display: block">退出</span>
@@ -25,6 +24,33 @@
         </el-dropdown-menu>
       </el-dropdown>
     </div>
+
+    <div class="message-wrap" @click="messageShow = true;">
+      <el-badge :value="messageNum" style="margin-right: 20px;">
+        <i class="el-icon-message-solid" style="font-size: 22px;"></i>
+      </el-badge>
+    </div>
+
+    <el-dialog
+      title="消息中心"
+      :visible="messageShow"
+      custom-class="message-dialog"
+      @close="messageShow = false;"
+    >
+      <avue-crud :data="messageList" :option="option">
+        <template slot="status" slot-scope="scope">
+          <el-tag type="success" v-if="scope.row.status">通过</el-tag>
+          <el-tag type="danger" v-else>驳回</el-tag>
+        </template>
+        <template slot="isRead" slot-scope="scope">
+          <el-tag type="success" v-if="scope.row.isRead">已读</el-tag>
+          <el-tag type="danger" v-else>未读</el-tag>
+        </template>
+        <template slot="menu" slot-scope="scope">
+          <el-button size="mini" type="text" @click="onRead(scope.row)" v-if="!scope.row.isRead">已读</el-button>
+        </template>
+      </avue-crud>
+    </el-dialog>
   </div>
 </template>
 
@@ -33,19 +59,78 @@ import { mapGetters } from "vuex";
 import Breadcrumb from "@/components/Breadcrumb";
 import Hamburger from "@/components/Hamburger";
 import { removeToken } from "@/utils/auth";
-import { Dic } from '@utils'
+import { Dic } from "@utils";
 export default {
   components: {
     Breadcrumb,
     Hamburger,
   },
+  data() {
+    return {
+      messageShow: false,
+      messageList: [],
+      option: {
+        align: "center",
+        menuAlign: "center",
+        addBtn: false,
+        columnBtn: false,
+        refreshBtn: false,
+        delBtn: false,
+        editBtn: false,
+        height: 500,
+        column: [
+          {
+            label: "标题",
+            prop: "title",
+          },
+          {
+            label: "内容",
+            prop: "msg",
+          },
+          {
+            label: "发送时间",
+            prop: "createdAt",
+            type: "date",
+            format: "yyyy-MM-dd HH:mm:ss",
+            valueFormat: "yyyy-MM-dd HH:mm:ss",
+          },
+          {
+            label: "状态",
+            prop: "status",
+            slot: true,
+          },
+          {
+            label: "是否已读",
+            prop: "isRead",
+            slot: true,
+          },
+        ],
+      },
+    };
+  },
+  created() {
+    this.getMessageList();
+    setInterval(() => {
+      this.getMessageList();
+    }, 30000);
+  },
   computed: {
     ...mapGetters(["sidebar", "avatar", "name"]),
-    userInfo () {
-      return this.$store.state.user.userInfo
-    }
+    userInfo() {
+      return this.$store.state.user.userInfo;
+    },
+    messageNum() {
+      return this.messageList.filter((item) => !item.isRead).length;
+    },
   },
   methods: {
+    // 消息已读
+    async onRead ({ id }) {
+      const result = await this.$fetchGet('/api/message/read', {
+        id
+      })
+      this.getMessageList();
+    },
     toggleSideBar() {
       this.$store.dispatch("app/toggleSideBar");
     },
@@ -64,11 +149,15 @@ export default {
         })
         .catch(() => {});
     },
+    async getMessageList() {
+      const result = await this.$fetchGet("/api/message");
+      this.messageList = result || [];
+    },
   },
 };
 </script>
 
-<style lang="scss" scoped>
+<style lang="scss">
 .navbar {
   height: 50px;
   overflow: hidden;
@@ -92,7 +181,18 @@ export default {
   .breadcrumb-container {
     float: left;
   }
-
+  .message-wrap {
+    cursor: pointer;
+    height: 50px;
+    line-height: 50px;
+    display: inline-block;
+    float: right;
+    margin-right: 10px;
+    margin-top: 5px;
+    .el-badge__content.is-fixed {
+      top: 10px;
+    }
+  }
   .right-menu {
     float: right;
     height: 100%;
@@ -126,7 +226,6 @@ export default {
       .avatar-wrapper {
         margin-top: 5px;
         position: relative;
-
         .user-avatar {
           cursor: pointer;
           width: 40px;
@@ -143,6 +242,11 @@ export default {
         }
       }
     }
+  }
+}
+.message-dialog {
+  .el-dialog__body {
+    padding: 0 20px;
   }
 }
 </style>
