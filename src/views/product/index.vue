@@ -12,11 +12,7 @@
       @refresh-change="refreshChange"
       @search-change="searchChange"
       :permission="getPermission"
-    >
-      <template slot="menu" slot-scope="scope">
-        <el-button type="text" icon="el-icon-truck" style="font-size: 12px;" v-if="scope.row.status === 'adopt'" @click="onDelivery(scope.row)">发货</el-button>
-      </template>
-    </avue-crud>
+    ></avue-crud>
 
     <Confirm ref="confirm" />
   </div>
@@ -40,62 +36,65 @@ export default {
       option: {
         align: "center",
         menuAlign: "center",
-        labelWidth: "100",
-        editBtnText: "重新提交",
+        labelWidth: "125",
         viewBtn: true,
         column: [
           {
-            label: "店铺名称",
-            prop: "shopName",
+            label: "产品名称",
+            prop: "productName",
             search: true,
             rules: [
               {
                 required: true,
-                message: "输入店铺名称",
+                message: "输入产品名称",
               },
             ],
           },
           {
-            label: "法人姓名",
-            prop: "legalPrsonName",
+            label: "国家",
+            prop: "country",
+            type: "select",
+            search: true,
+            dicData: Dic.find("DIC006"),
             rules: [
               {
                 required: true,
-                message: "输入法人姓名",
+                message: "选择国家",
               },
             ],
           },
           {
-            label: "法人身份证",
-            prop: "legalPrsonCard",
-            hide: true,
+            label: "产品分类",
+            prop: "productClass",
+            type: "select",
+            search: true,
+            dicData: Dic.find("DIC007"),
             rules: [
               {
                 required: true,
-                message: "输入法人身份证",
+                message: "选择产品分类",
               },
             ],
           },
           {
-            label: "邮箱",
-            prop: "email",
-            hide: true,
+            label: "产品型号",
+            prop: "productModel",
             rules: [
               {
                 required: true,
-                message: "输入邮箱",
+                message: "输入产品型号",
               },
             ],
           },
           {
-            label: "营业执照",
-            prop: "businessLicense",
+            label: "证书/检测报告",
+            prop: "productReport",
             hide: true,
             type: "upload",
             accept: "image/png, image/jpeg",
             listType: "picture-img",
             multiple: false,
-            span: 24,
+            span: 12,
             propsHttp: {
               home: this.$fileUrl,
               res: "data",
@@ -109,29 +108,59 @@ export default {
             rules: [
               {
                 required: true,
-                message: "上传营业执照",
+                message: "上传证书/检测报告",
               },
             ],
           },
           {
-            label: "联系人姓名",
-            prop: "contactName",
+            label: "产品包装六面图",
+            prop: "productPackingImg",
             hide: true,
+            type: "upload",
+            accept: "image/png, image/jpeg",
+            listType: "picture-img",
+            multiple: false,
+            span: 12,
+            propsHttp: {
+              home: this.$fileUrl,
+              res: "data",
+            },
+            canvasOption: {
+              text: " ",
+              ratio: 1,
+            },
+            tip: "只能上传jpg/png图片，且不超过5M",
+            action: "/common/uploadFile",
             rules: [
               {
                 required: true,
-                message: "输入联系人姓名",
+                message: "上传产品包装六面图",
               },
             ],
           },
           {
-            label: "联系人电话",
-            prop: "contactPhone",
+            label: "产品说明书",
+            prop: "productInstructions",
             hide: true,
+            type: "upload",
+            accept: "image/png, image/jpeg",
+            listType: "picture-img",
+            multiple: false,
+            span: 12,
+            propsHttp: {
+              home: this.$fileUrl,
+              res: "data",
+            },
+            canvasOption: {
+              text: " ",
+              ratio: 1,
+            },
+            tip: "只能上传jpg/png图片，且不超过5M",
+            action: "/common/uploadFile",
             rules: [
               {
                 required: true,
-                message: "输入联系人电话",
+                message: "上传产品产品说明书",
               },
             ],
           },
@@ -139,36 +168,10 @@ export default {
             label: "审核状态",
             prop: "status",
             type: "select",
-            search: true,
+            dicData: Dic.find('DIC008'),
             addDisplay: false,
-            editDisplay: false,
-            dicData: Dic.find("DIC001"),
-          },
-          {
-            label: "驳回原因",
-            prop: "rejectReason",
-            hide: true,
-            addDisplay: false,
-            editDisplay: false,
-          },
-          {
-            label: "申请时间",
-            prop: "createdAt",
-            type: "date",
-            addDisplay: false,
-            editDisplay: false,
-            format: "yyyy-MM-dd HH:mm:ss",
-            valueFormat: "yyyy-MM-dd HH:mm:ss",
-          },
-          {
-            label: "审批时间",
-            prop: "updatedAt",
-            type: "date",
-            addDisplay: false,
-            editDisplay: false,
-            format: "yyyy-MM-dd HH:mm:ss",
-            valueFormat: "yyyy-MM-dd HH:mm:ss",
-          },
+            search: true
+          }
         ],
       },
     };
@@ -180,7 +183,7 @@ export default {
     // 列表
     async getList(cb = () => {}) {
       this.tableLoading = true;
-      const result = await this.$fetchGet("/api/shop/index", {
+      const result = await this.$fetchGet("/api/product/index", {
         ...this.search,
         pageNo: this.page.currentPage,
         pageSize: this.page.pageSize,
@@ -200,24 +203,24 @@ export default {
     // 新增
     async rowSave(row, done, loading) {
       const {
-        shopName,
-        legalPrsonName,
-        legalPrsonCard,
-        email,
-        businessLicense,
-        contactName,
-        contactPhone,
+        productName,
+        country,
+        productClass,
+        productModel,
+        productReport,
+        productPackingImg,
+        productInstructions,
       } = row;
       const result = await this.$fetchPost(
-        "/api/shop/add",
+        "/api/product/add",
         {
-          shopName,
-          legalPrsonName,
-          legalPrsonCard,
-          email,
-          businessLicense,
-          contactName,
-          contactPhone,
+          productName,
+          country,
+          productClass,
+          productModel,
+          productReport,
+          productPackingImg,
+          productInstructions,
         },
         { allData: true }
       );
@@ -293,9 +296,7 @@ export default {
       this.getList();
     },
     // 发货
-    onDelivery () {
-      
-    }
+    onDelivery() {},
   },
 };
 </script>
