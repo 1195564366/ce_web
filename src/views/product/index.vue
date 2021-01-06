@@ -177,8 +177,7 @@ export default {
             prop: "status",
             type: "select",
             dicData: Dic.find('DIC008'),
-            addDisplay: false,
-            search: true
+            addDisplay: false
           }
         ],
       },

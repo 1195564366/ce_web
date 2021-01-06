@@ -38,7 +38,7 @@ module.exports = {
     },
     proxy: {
       '/api': {
-        target: 'http://localhost:7001',
+        target: 'http://106.54.98.224:7009',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
@@ -46,7 +46,7 @@ module.exports = {
         }
       },
       '/common': {
-        target: 'http://localhost:7001',
+        target: 'http://106.54.98.224:7009',
         ws: true,
         changeOrigin: true,
         pathRewrite: {
