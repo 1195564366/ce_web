@@ -14,11 +14,13 @@
       :permission="getPermission"
     >
       <template slot="menu" slot-scope="scope">
-        <el-button type="text" icon="el-icon-truck" style="font-size: 12px;" v-if="scope.row.status === 'adopt'" @click="onDelivery(scope.row)">发货</el-button>
+        <el-button type="text" icon="el-icon-truck" style="font-size: 12px;" v-if="scope.row.status === 'adopt'" @click="onSendGoods(scope.row)">发货</el-button>
       </template>
     </avue-crud>
 
     <Confirm ref="confirm" />
+
+    <sendGoods ref="sendGoods" />
   </div>
 </template>
 
@@ -26,10 +28,12 @@
 import Confirm from "@components/Confirm";
 import { Dic } from "@utils";
 import { Page } from "@minxin";
+import sendGoods from './sendGoods';
 
 export default {
   components: {
     Confirm,
+    sendGoods
   },
   mixins: [Page],
   data() {
@@ -293,8 +297,8 @@ export default {
       this.getList();
     },
     // 发货
-    onDelivery () {
-      
+    onSendGoods (row) {
+      this.$refs['sendGoods'].open(row);
     }
   },
 };

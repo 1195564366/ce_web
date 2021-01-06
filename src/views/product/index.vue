@@ -12,9 +12,14 @@
       @refresh-change="refreshChange"
       @search-change="searchChange"
       :permission="getPermission"
-    ></avue-crud>
+    >
+      <template slot-scope="scope" slot="menu">
+        <el-button type="text" v-if="scope.row.status === '5'" size="mini" icon="el-icon-check" @click="onRepeatReviewed(scope.row)">复审提交</el-button>
+      </template>
+    </avue-crud>
 
     <Confirm ref="confirm" />
+    <repeatReviewedForm ref="repeatReviewedForm" @ok="getList"/>
   </div>
 </template>
 
@@ -22,10 +27,12 @@
 import Confirm from "@components/Confirm";
 import { Dic } from "@utils";
 import { Page } from "@minxin";
+import repeatReviewedForm from './repeatReviewedForm';
 
 export default {
   components: {
     Confirm,
+    repeatReviewedForm
   },
   mixins: [Page],
   data() {
@@ -55,6 +62,7 @@ export default {
             prop: "country",
             type: "select",
             search: true,
+            multiple: true,
             dicData: Dic.find("DIC006"),
             rules: [
               {
@@ -295,8 +303,11 @@ export default {
       this.page.currentPage = 1;
       this.getList();
     },
-    // 发货
-    onDelivery() {},
+    // 复审提交
+    onRepeatReviewed(row) {
+      this.$refs['repeatReviewedForm'].open(row);
+      // console.log(row);
+    },
   },
 };
 </script>

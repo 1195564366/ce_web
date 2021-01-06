@@ -86,6 +86,18 @@ export const constantRoutes = [
   },
 
   {
+    path: '/sendGoods',
+    component: Layout,
+    redirect: '/sendGoods/index',
+    children: [{
+      path: 'index',
+      name: 'index',
+      component: () => import('@/views/sendGoods'),
+      meta: { title: '我的发货', icon: 'analysis' }
+    }]
+  },
+
+  {
     path: '/bill',
     component: Layout,
     redirect: '/bill/index',

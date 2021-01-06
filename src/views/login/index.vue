@@ -10,8 +10,8 @@
         </div>
       </div>
       <div class="login-main">
-        <el-form>
-          <el-form-item>
+        <el-form :model="form" :rules="rules" ref="form">
+          <el-form-item prop="phone">
             <el-input
               placeholder="请输入手机号"
               prefix-icon="el-icon-user-solid"
@@ -19,11 +19,12 @@
             >
             </el-input>
           </el-form-item>
-          <el-form-item>
+          <el-form-item prop="password">
             <el-input
               placeholder="请输入密码"
               prefix-icon="el-icon-lock"
               v-model="form.password"
+              type="password"
             >
             </el-input>
           </el-form-item>
@@ -42,9 +43,19 @@ export default {
   data() {
     return {
       form: {
-        phone: 13991104074,
-        password: 123456
+        phone: '',
+        password: ''
       },
+      rules: {
+        phone: [{
+          required: true,
+          message: '输入手机号'
+        }],
+        password: [{
+          required: true,
+          message: '输入密码'
+        }]
+      }
     };
   },
   created () {
@@ -57,16 +68,19 @@ export default {
   },
   methods: {
     async login() {
-      const { phone, password } = this.form;
-      const result = await this.$fetchPost("/api/login", {
-        phone,
-        password,
-      });
-      this.$store.commit('user/SET_USERINFO', result);
-      this.$store.commit('user/SET_TOKEN', result.token);
-      console.log(result);
-      this.$router.push('/');
-      this.$message.success('登陆成功')
+      this.$refs['form'].validate(async valid => {
+        if (!valid) return;
+        const { phone, password } = this.form;
+        const result = await this.$fetchPost("/api/login", {
+          phone,
+          password,
+        });
+        this.$store.commit('user/SET_USERINFO', result);
+        this.$store.commit('user/SET_TOKEN', result.token);
+        console.log(result);
+        this.$router.push('/');
+        this.$message.success('登陆成功')
+      })
     },
     toRegister () {
       this.$router.push('/register')
