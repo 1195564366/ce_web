@@ -36,7 +36,7 @@ window.axios = axios;
 
 Vue.prototype.$fetchPost = post;
 Vue.prototype.$fetchGet = get;
-Vue.prototype.$fileUrl = 'http://localhost:7001/public/';
+Vue.prototype.$fileUrl = window.$fileUrl;
 Vue.prototype.$orderFileAccept = ".jpg,.jpeg,.png,.pdf,.JPG,.JPEG,.PDF"
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale });
