@@ -14,7 +14,7 @@
       :permission="getPermission"
     >
       <template slot="menu" slot-scope="scope">
-        <el-button type="text" icon="el-icon-truck" style="font-size: 12px;" v-if="scope.row.status === 'adopt'" @click="onSendGoods(scope.row)">发货</el-button>
+        <el-button type="text" icon="el-icon-truck" style="font-size: 12px;" v-if="scope.row.status === 'adopt' && scope.row.useStatus === 'enable'" @click="onSendGoods(scope.row)">发货</el-button>
       </template>
     </avue-crud>
 
@@ -47,6 +47,8 @@ export default {
         labelWidth: "100",
         editBtnText: "重新提交",
         viewBtn: true,
+        span: 24,
+        dialogWidth: '30%',
         column: [
           {
             label: "店铺名称",
@@ -56,6 +58,16 @@ export default {
               {
                 required: true,
                 message: "输入店铺名称",
+              },
+            ],
+          },
+          {
+            label: "店铺链接",
+            prop: "shopLink",
+            rules: [
+              {
+                required: true,
+                message: "输入店铺链接",
               },
             ],
           },
@@ -149,6 +161,15 @@ export default {
             dicData: Dic.find("DIC001"),
           },
           {
+            label: "店铺状态",
+            prop: "useStatus",
+            type: "select",
+            search: true,
+            addDisplay: false,
+            editDisplay: false,
+            dicData: Dic.find('DIC010')
+          },
+          {
             label: "驳回原因",
             prop: "rejectReason",
             hide: true,
@@ -205,6 +226,7 @@ export default {
     async rowSave(row, done, loading) {
       const {
         shopName,
+        shopLink,
         legalPrsonName,
         legalPrsonCard,
         email,
@@ -216,6 +238,7 @@ export default {
         "/api/shop/add",
         {
           shopName,
+          shopLink,
           legalPrsonName,
           legalPrsonCard,
           email,
