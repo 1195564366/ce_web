@@ -9,15 +9,6 @@
       @refresh-change="refreshChange"
       @search-change="searchChange"
     >
-    <template slot="productName" slot-scope="scope">
-      {{ scope.row.product.productName }}
-    </template>
-    <template slot="shopName" slot-scope="scope">
-      {{ scope.row.shop.shopName }}
-    </template>
-    <template slot="asin" slot-scope="scope">
-      {{ scope.row.product.asin }}
-    </template>
     </avue-crud>
   </div>
 </template>
@@ -42,18 +33,21 @@ export default {
         column: [
           {
             label: "店铺名称",
-            prop: "shopName",
-            slot: true
+            prop: "shopName"
           },
           {
             label: "产品名称",
-            prop: "productName",
-            slot: true
+            prop: "productName"
+          },
+          {
+            label: "国家",
+            prop: "country",
+            type: 'select',
+            dicData: Dic.find('DIC006')
           },
           {
             label: "产品ASIN",
-            prop: "asin",
-            slot: true
+            prop: "asin"
           },
           {
             label: "箱数",
@@ -87,7 +81,18 @@ export default {
         pageSize: this.page.pageSize,
       });
       this.tableLoading = false;
-      this.data = result ? result.rows : [];
+      this.data = result ? result.rows.map(item => {
+        const { shop, product, shopToProduct, createdAt, boxNum, num } = item;
+        const { shopName } = shop;
+        const { productName, country } = product;
+        const { asin } = shopToProduct;
+        return {
+          shopName,
+          productName,
+          asin,
+          createdAt, boxNum, num, country
+        }
+      }) : [];
       this.page.total = result ? result.count : 0;
       cb();
     },

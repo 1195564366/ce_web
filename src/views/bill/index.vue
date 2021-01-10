@@ -32,6 +32,11 @@ export default {
         addBtn: false,
         column: [
           {
+            label: "账单号",
+            prop: 'orderId',
+            search: true
+          },
+          {
             label: "账单类型",
             prop: "type",
             search: true,
@@ -39,8 +44,16 @@ export default {
             dicData: Dic.find('DIC005')
           },
           {
-            label: "账单金额",
-            prop: "cost"
+            label: "账单明细",
+            prop: "message"
+          },
+          {
+            label: "应付金额",
+            prop: "amountCost"
+          },
+          {
+            label: "实付金额",
+            prop: "paidCost"
           },
           {
             label: "计费时间",

@@ -14,13 +14,37 @@
       :permission="getPermission"
     >
       <template slot="menu" slot-scope="scope">
-        <el-button type="text" icon="el-icon-truck" style="font-size: 12px;" v-if="scope.row.status === 'adopt' && scope.row.useStatus === 'enable'" @click="onSendGoods(scope.row)">发货</el-button>
+        <el-button
+          type="text"
+          icon="el-icon-truck"
+          style="font-size: 12px"
+          v-if="
+            scope.row.status === 'adopt' && scope.row.useStatus === 'enable'
+          "
+          @click="onSendGoods(scope.row)"
+          >发货</el-button
+        >
+        <el-button
+          type="text"
+          icon="el-icon-plus"
+          style="font-size: 12px"
+          v-if="
+            scope.row.status === 'adopt' && scope.row.useStatus === 'enable'
+          "
+          @click="onAddProduct(scope.row)"
+          >添加产品</el-button
+        >
+      </template>
+
+      <template slot="expand" slot-scope="{ row }">
+        <expand :list="row.shopToProducts" @ok="getList" />
       </template>
     </avue-crud>
 
     <Confirm ref="confirm" />
 
     <sendGoods ref="sendGoods" />
+    <addProduct ref="addProduct" />
   </div>
 </template>
 
@@ -28,12 +52,16 @@
 import Confirm from "@components/Confirm";
 import { Dic } from "@utils";
 import { Page } from "@minxin";
-import sendGoods from './sendGoods';
+import sendGoods from "./sendGoods";
+import addProduct from "./addProduct";
+import expand from "./expand";
 
 export default {
   components: {
     Confirm,
-    sendGoods
+    sendGoods,
+    addProduct,
+    expand,
   },
   mixins: [Page],
   data() {
@@ -42,13 +70,15 @@ export default {
       tableLoading: false,
       data: [],
       option: {
+        expandRowKeys: [],
+        expand: true,
         align: "center",
         menuAlign: "center",
         labelWidth: "100",
         editBtnText: "重新提交",
         viewBtn: true,
         span: 24,
-        dialogWidth: '30%',
+        dialogWidth: this.$dialogWidth,
         column: [
           {
             label: "店铺名称",
@@ -64,6 +94,8 @@ export default {
           {
             label: "店铺链接",
             prop: "shopLink",
+            type: "url",
+            alone: true,
             rules: [
               {
                 required: true,
@@ -167,7 +199,7 @@ export default {
             search: true,
             addDisplay: false,
             editDisplay: false,
-            dicData: Dic.find('DIC010')
+            dicData: Dic.find("DIC010"),
           },
           {
             label: "驳回原因",
@@ -203,17 +235,20 @@ export default {
   },
   methods: {
     // 列表
-    async getList(cb = () => {}) {
+    getList(cb = () => {}) {
       this.tableLoading = true;
-      const result = await this.$fetchGet("/api/shop/index", {
-        ...this.search,
-        pageNo: this.page.currentPage,
-        pageSize: this.page.pageSize,
+      this.data = [];
+      this.$nextTick(async () => {
+        const result = await this.$fetchGet("/api/shop/index", {
+          ...this.search,
+          pageNo: this.page.currentPage,
+          pageSize: this.page.pageSize,
+        });
+        this.tableLoading = false;
+        this.data = result ? result.rows : [];
+        this.page.total = result ? result.count : 0;
+        cb();
       });
-      this.tableLoading = false;
-      this.data = result ? result.rows : [];
-      this.page.total = result ? result.count : 0;
-      cb();
     },
     // 按钮权限
     getPermission(key, row, index) {
@@ -224,6 +259,8 @@ export default {
     },
     // 新增
     async rowSave(row, done, loading) {
+      console.log(row);
+      return;
       const {
         shopName,
         shopLink,
@@ -238,7 +275,7 @@ export default {
         "/api/shop/add",
         {
           shopName,
-          shopLink,
+          shopLink: shopLink[0],
           legalPrsonName,
           legalPrsonCard,
           email,
@@ -320,9 +357,13 @@ export default {
       this.getList();
     },
     // 发货
-    onSendGoods (row) {
-      this.$refs['sendGoods'].open(row);
-    }
+    onSendGoods(row) {
+      this.$refs["sendGoods"].open(row);
+    },
+    // 添加产品
+    onAddProduct(row) {
+      this.$refs["addProduct"].open(row);
+    },
   },
 };
 </script>

@@ -18,6 +18,9 @@
           <router-link to="/">
             <el-dropdown-item>首页</el-dropdown-item>
           </router-link>
+          <el-dropdown-item divided @click.native="editUserInfo">
+            <span style="display: block">修改个人资料</span>
+          </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
             <span style="display: block">退出</span>
           </el-dropdown-item>
@@ -124,6 +127,10 @@ export default {
     },
   },
   methods: {
+    // 修改个人资料
+    async editUserInfo () {
+      
+    },
     // 消息已读
     async onRead ({ id }) {
       const result = await this.$fetchGet('/api/message/read', {

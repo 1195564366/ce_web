@@ -80,9 +80,18 @@ export default {
     async open(row) {
       const { id } = row;
       this.sid = id;
-      const result = await this.$fetchGet("/api/product/adoptList");
-      this.product = result;
-      console.log(result);
+      const result = await this.$fetchGet("/api/shop/sendGoodsProductList", { sid: id });
+      this.product = result.map(item => {
+        const { product, asin } = item;
+        const spid = item.id;
+        const { productName, id } = product;
+        return {
+          spid,
+          productName,
+          id,
+          asin
+        }
+      });
       this.show = true;
     },
     close() {
@@ -118,6 +127,11 @@ export default {
       this.$refs["form"].validate(async (valid) => {
         if (!valid) return;
         const { body } = this.form;
+        body.map(item => {
+          const { pid } = item;
+          const index = this.product.findIndex(item => item.id === pid);
+          item.spid = this.product[index].spid
+        })
         this.loading = true;
         const result = await this.$fetchPost('/api/sendGoods/send', {
           sid: this.sid,

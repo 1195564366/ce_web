@@ -14,12 +14,12 @@
       :permission="getPermission"
     >
       <template slot-scope="scope" slot="menu">
-        <el-button type="text" v-if="scope.row.status === '5'" size="mini" icon="el-icon-check" @click="onRepeatReviewed(scope.row)">复审提交</el-button>
+        <!-- <el-button type="text" v-if="scope.row.status === '5'" size="mini" icon="el-icon-check" @click="onRepeatReviewed(scope.row)">复审提交</el-button> -->
       </template>
     </avue-crud>
 
     <Confirm ref="confirm" />
-    <repeatReviewedForm ref="repeatReviewedForm" @ok="getList"/>
+    <repeatReviewedForm ref="repeatReviewedForm" @ok="getList" />
   </div>
 </template>
 
@@ -27,12 +27,12 @@
 import Confirm from "@components/Confirm";
 import { Dic } from "@utils";
 import { Page } from "@minxin";
-import repeatReviewedForm from './repeatReviewedForm';
+import repeatReviewedForm from "./repeatReviewedForm";
 
 export default {
   components: {
     Confirm,
-    repeatReviewedForm
+    repeatReviewedForm,
   },
   mixins: [Page],
   data() {
@@ -45,11 +45,13 @@ export default {
         menuAlign: "center",
         labelWidth: "125",
         viewBtn: true,
+        editBtnText: '重新提交',
         column: [
           {
             label: "产品名称",
             prop: "productName",
             search: true,
+            editDisabled: true,
             rules: [
               {
                 required: true,
@@ -63,6 +65,7 @@ export default {
             type: "select",
             search: true,
             multiple: true,
+            editDisabled: true,
             dicData: Dic.find("DIC006"),
             rules: [
               {
@@ -176,9 +179,10 @@ export default {
             label: "审核状态",
             prop: "status",
             type: "select",
-            dicData: Dic.find('DIC008'),
-            addDisplay: false
-          }
+            dicData: Dic.find("DIC008"),
+            editDisplay: false,
+            addDisplay: false,
+          },
         ],
       },
     };
@@ -205,7 +209,8 @@ export default {
       if (key === "viewBtn") return true;
       if (!row) return true;
       const { status } = row;
-      return status === "reject";
+      if (status === "4" && ["delBtn", "editBtn"].includes(key)) return true;
+      return false;
     },
     // 新增
     async rowSave(row, done, loading) {
@@ -241,48 +246,44 @@ export default {
     async rowUpdate(row, index, done, loading) {
       const {
         id,
-        shopName,
-        legalPrsonName,
-        legalPrsonCard,
-        email,
-        businessLicense,
-        contactName,
-        contactPhone,
+        productClass,
+        productModel,
+        productInstructions,
+        productPackingImg,
+        productReport,
       } = row;
       const result = await this.$fetchPost(
-        "/api/shop/repeatSubmit",
+        "/api/product/repeatSubmit",
         {
           id,
-          shopName,
-          legalPrsonName,
-          legalPrsonCard,
-          email,
-          businessLicense,
-          contactName,
-          contactPhone,
+          productClass,
+          productModel,
+          productInstructions,
+          productPackingImg,
+          productReport,
         },
         { allData: true }
       );
       loading();
       if (!result.success) return;
       done();
-      this.$message.success("店铺重新审核提交成功，请等待管理员审核通过");
+      this.$message.success("产品重新审核提交成功，请等待管理员审核通过");
       this.getList();
     },
     // 删除
     async rowDel(row, index) {
-      const { id, shopName } = row;
+      const { id, productName } = row;
       this.$refs["confirm"].open({
-        message: `是否删除店铺《${shopName}》？`,
+        message: `是否删除产品《${productName}》？`,
         ok: async (cb) => {
           const result = await this.$fetchGet(
-            `/api/shop/del`,
+            `/api/product/del`,
             { id },
             { allData: true }
           );
           cb();
           if (!result.code) return;
-          this.$message.success("店铺删除成功");
+          this.$message.success("产品删除成功");
           this.getList();
         },
       });
@@ -304,7 +305,7 @@ export default {
     },
     // 复审提交
     onRepeatReviewed(row) {
-      this.$refs['repeatReviewedForm'].open(row);
+      this.$refs["repeatReviewedForm"].open(row);
       // console.log(row);
     },
   },
