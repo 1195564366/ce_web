@@ -13,9 +13,9 @@
       @search-change="searchChange"
       :permission="getPermission"
     >
-      <template slot-scope="scope" slot="menu">
+      <!-- <template slot-scope="scope" slot="menu"> -->
         <!-- <el-button type="text" v-if="scope.row.status === '5'" size="mini" icon="el-icon-check" @click="onRepeatReviewed(scope.row)">复审提交</el-button> -->
-      </template>
+      <!-- </template> -->
     </avue-crud>
 
     <Confirm ref="confirm" />
@@ -46,6 +46,8 @@ export default {
         labelWidth: "125",
         viewBtn: true,
         editBtnText: '重新提交',
+        span: 24,
+        dialogWidth: this.$dialogWidth,
         column: [
           {
             label: "产品名称",
@@ -105,7 +107,6 @@ export default {
             accept: "image/png, image/jpeg",
             listType: "picture-img",
             multiple: false,
-            span: 12,
             propsHttp: {
               home: this.$fileUrl,
               res: "data",
@@ -131,7 +132,6 @@ export default {
             accept: "image/png, image/jpeg",
             listType: "picture-img",
             multiple: false,
-            span: 12,
             propsHttp: {
               home: this.$fileUrl,
               res: "data",
@@ -157,7 +157,6 @@ export default {
             accept: "image/png, image/jpeg",
             listType: "picture-img",
             multiple: false,
-            span: 12,
             propsHttp: {
               home: this.$fileUrl,
               res: "data",

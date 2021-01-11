@@ -18,12 +18,9 @@
           type="text"
           icon="el-icon-truck"
           style="font-size: 12px"
-          v-if="
-            scope.row.status === 'adopt' && scope.row.useStatus === 'enable'
-          "
+          v-if="scope.row.status === 'adopt' && scope.row.useStatus === 'enable'"
           @click="onSendGoods(scope.row)"
-          >发货</el-button
-        >
+        >发货</el-button>
         <el-button
           type="text"
           icon="el-icon-plus"
@@ -32,8 +29,7 @@
             scope.row.status === 'adopt' && scope.row.useStatus === 'enable'
           "
           @click="onAddProduct(scope.row)"
-          >添加产品</el-button
-        >
+        >添加产品</el-button>
       </template>
 
       <template slot="expand" slot-scope="{ row }">
@@ -70,7 +66,6 @@ export default {
       tableLoading: false,
       data: [],
       option: {
-        expandRowKeys: [],
         expand: true,
         align: "center",
         menuAlign: "center",
@@ -259,8 +254,6 @@ export default {
     },
     // 新增
     async rowSave(row, done, loading) {
-      console.log(row);
-      return;
       const {
         shopName,
         shopLink,

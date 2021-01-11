@@ -11,7 +11,7 @@
     <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
-          <span>{{ userInfo.phone }}</span>
+          <span>{{ userInfo.name || '-' }}</span>
           <i class="el-icon-caret-bottom" />
         </div>
         <el-dropdown-menu slot="dropdown" class="user-dropdown">
@@ -19,7 +19,7 @@
             <el-dropdown-item>首页</el-dropdown-item>
           </router-link>
           <el-dropdown-item divided @click.native="editUserInfo">
-            <span style="display: block">修改个人资料</span>
+            <span style="display: block">个人资料</span>
           </el-dropdown-item>
           <el-dropdown-item divided @click.native="logout">
             <span style="display: block">退出</span>
@@ -54,6 +54,25 @@
         </template>
       </avue-crud>
     </el-dialog>
+    <el-dialog
+      title="个人资料"
+      :visible="userInfoShow"
+      @close="userInfoShow = false;"
+      width="500px"
+    >
+      <el-form :model="userInfoForm" :rules="rules" ref="userInfoForm">
+        <el-form-item label="手机号" prop="phone">
+          <el-input placeholder="输入手机号" disabled v-model="userInfoForm.phone"/>
+        </el-form-item>
+        <el-form-item label="姓名" prop="name">
+          <el-input placeholder="输入手机号" v-model="userInfoForm.name"/>
+        </el-form-item>
+      </el-form>
+      <span slot="footer">
+        <el-button type="primary" @click="userInfoSubmit">修改</el-button>
+        <el-button @click="userInfoShow = false">取消</el-button>
+      </span>
+    </el-dialog>
   </div>
 </template>
 
@@ -71,6 +90,8 @@ export default {
   data() {
     return {
       messageShow: false,
+      userInfoShow: false,
+      userInfoForm: {},
       messageList: [],
       option: {
         align: "center",
@@ -109,6 +130,16 @@ export default {
           },
         ],
       },
+      rules: {
+        phone: [{
+          required: true,
+          message: "输入手机号"
+        }],
+        name: [{
+          required: true,
+          message: "输入姓名"
+        }]
+      }
     };
   },
   created() {
@@ -127,9 +158,22 @@ export default {
     },
   },
   methods: {
+    userInfoSubmit () {
+      this.$refs['userInfoForm'].validate(async valid => {
+        if (!valid) return
+        const result = await this.$fetchPost('/api/user/update', this.userInfoForm, { allData: true });
+        if (!result.success) return;
+        this.$message.success('资料修改成功');
+        this.userInfoShow = false;
+        const userInfo = await this.$fetchGet('/api/user/get');
+        this.$store.commit('user/SET_USERINFO', userInfo);
+      })
+    },
     // 修改个人资料
-    async editUserInfo () {
-      
+    editUserInfo () {
+      const { phone, name } = this.$store.state.user.userInfo;
+      this.userInfoForm = { phone, name }
+      this.userInfoShow = true;
     },
     // 消息已读
     async onRead ({ id }) {

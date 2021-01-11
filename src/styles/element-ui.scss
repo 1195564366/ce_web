@@ -15,6 +15,11 @@
   display: none;
 }
 
+.el-link--inner {
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  overflow: hidden;
+}
 
 // to fixed https://github.com/ElemeFE/element/issues/2461
 .el-dialog {
