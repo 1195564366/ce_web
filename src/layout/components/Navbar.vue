@@ -191,6 +191,8 @@ export default {
         cancelButtonText: "取消",
       })
         .then(() => {
+          this.$store.commit('user/SET_USERINFO', {});
+          this.$store.commit('user/SET_TOKEN', null);
           removeToken();
           this.$router.push(`/login?redirect=${this.$route.fullPath}`);
           this.$message({

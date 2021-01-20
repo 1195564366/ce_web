@@ -39,6 +39,8 @@
 </template>
 
 <script>
+import { setToken } from "@/utils/auth";
+
 export default {
   data() {
     return {
@@ -77,6 +79,7 @@ export default {
         });
         this.$store.commit('user/SET_USERINFO', result);
         this.$store.commit('user/SET_TOKEN', result.token);
+        setToken(result.token);
         console.log(result);
         this.$router.push('/');
         this.$message.success('登陆成功')

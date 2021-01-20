@@ -109,6 +109,18 @@ export const constantRoutes = [
     }]
   },
 
+  {
+    path: '/recover',
+    component: Layout,
+    redirect: '/recover/index',
+    children: [{
+      path: 'index',
+      name: 'index',
+      component: () => import('@/views/recover'),
+      meta: { title: '我的回收', icon: 'analysis' }
+    }]
+  },
+
 
   // 404 page must be placed at the end !!!
   { path: '*', redirect: '/404', hidden: true }
