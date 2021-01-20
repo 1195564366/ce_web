@@ -1,5 +1,6 @@
 <template>
   <el-dialog title="发货" :visible="show" @close="close" width="1220px">
+    <el-tag type="danger" style="margin-bottom: 20px;">提交之前，请确保已下载doc文件和欧代证书</el-tag>
     <el-form :inline="true" :model="form" ref="form">
       <el-card v-for="(item, index) in form.body" :key="index">
         <el-form-item
@@ -82,7 +83,6 @@ export default {
     };
   },
   methods: {
-
     downloadFile(type, index) {
       const { body } = this.form;
       if (!body[index].pid) {
@@ -94,11 +94,14 @@ export default {
       );
       const product = this.product[productIndex];
       const { doc, ouDaiCe, productName } = product;
-      const filePath = type === 'doc'? doc : ouDaiCe
+      const filePath = type === "doc" ? doc : ouDaiCe;
       console.log(filePath);
-      const fileType = filePath.split('.')[filePath.split('.').length - 1]
+      const fileType = filePath.split(".")[filePath.split(".").length - 1];
       console.log(fileType);
-      const fileName = type === 'doc'? `${productName}doc文件.${fileType}` : `${productName}欧代证书.${fileType}`
+      const fileName =
+        type === "doc"
+          ? `${productName}doc文件.${fileType}`
+          : `${productName}欧代证书.${fileType}`;
       console.log(fileName);
       const loading = this.$loading({
         lock: true,
@@ -179,27 +182,39 @@ export default {
     submit() {
       this.$refs["form"].validate(async (valid) => {
         if (!valid) return;
-        const { body } = this.form;
-        body.map((item) => {
-          const { pid } = item;
-          const index = this.product.findIndex((item) => item.id === pid);
-          item.spid = this.product[index].spid;
-        });
-        this.loading = true;
-        const result = await this.$fetchPost(
-          "/api/sendGoods/send",
+        this.$confirm(
+          "提交之前，请确保已下载doc文件和欧代证书, 是否继续?",
+          "温馨提示",
           {
-            sid: this.sid,
-            body,
-          },
-          {
-            allData: true,
+            confirmButtonText: "确定",
+            cancelButtonText: "取消",
+            type: "warning",
           }
-        );
-        this.loading = false;
-        if (!result.success) return;
-        this.$message.success("发货成功");
-        this.close();
+        )
+          .then(async () => {
+            const { body } = this.form;
+            body.map((item) => {
+              const { pid } = item;
+              const index = this.product.findIndex((item) => item.id === pid);
+              item.spid = this.product[index].spid;
+            });
+            this.loading = true;
+            const result = await this.$fetchPost(
+              "/api/sendGoods/send",
+              {
+                sid: this.sid,
+                body,
+              },
+              {
+                allData: true,
+              }
+            );
+            this.loading = false;
+            if (!result.success) return;
+            this.$message.success("发货成功");
+            this.close();
+          })
+          .catch(() => {});
       });
     },
   },

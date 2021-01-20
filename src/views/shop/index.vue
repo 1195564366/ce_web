@@ -30,6 +30,13 @@
           "
           @click="onAddProduct(scope.row)"
         >添加产品</el-button>
+        <!-- <el-button
+          type="text"
+          icon="el-icon-remove-outline"
+          style="font-size: 12px; color: #F56C6C;"
+          v-if="scope.row.status === 'adopt' && scope.row.useStatus === 'enable'"
+          @click="onClose(scope.row)"
+        >关闭店铺</el-button> -->
       </template>
 
       <template slot="expand" slot-scope="{ row }">
@@ -351,6 +358,11 @@ export default {
     },
     // 发货
     onSendGoods(row) {
+      // this.$notify({
+      //   title: '友情提示',
+      //   message: '发货之前，请确保已下载doc文件和欧代证书',
+      //   type: 'warning'
+      // });
       this.$refs["sendGoods"].open(row);
     },
     // 添加产品

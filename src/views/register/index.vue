@@ -8,15 +8,15 @@
           :class="form.type === 'OUDAI' && 'active'"
           @click="typeChange('OUDAI')"
         >
-          注册欧代
+          注册账号
         </div>
-        <div
+        <!-- <div
           class="register-header-item"
           :class="form.type === 'HS' && 'active'"
           @click="typeChange('HS')"
         >
           注册回收
-        </div>
+        </div> -->
       </div>
       <div class="register-main">
         <el-form :model="form" :rules="rules" ref="form">
@@ -186,9 +186,9 @@ export default {
       font-size: 18px;
       padding-bottom: 10px;
       cursor: pointer;
-      &:first-child {
-        margin-right: 80px;
-      }
+      // &:first-child {
+      //   margin-right: 80px;
+      // }
       &.active {
         color: #318bfa;
         font-weight: bold;

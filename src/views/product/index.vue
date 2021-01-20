@@ -13,8 +13,11 @@
       @search-change="searchChange"
       :permission="getPermission"
     >
+      <template slot="countryLabel">
+        <span>国家（多选）：</span>
+      </template>
       <!-- <template slot-scope="scope" slot="menu"> -->
-        <!-- <el-button type="text" v-if="scope.row.status === '5'" size="mini" icon="el-icon-check" @click="onRepeatReviewed(scope.row)">复审提交</el-button> -->
+      <!-- <el-button type="text" v-if="scope.row.status === '5'" size="mini" icon="el-icon-check" @click="onRepeatReviewed(scope.row)">复审提交</el-button> -->
       <!-- </template> -->
     </avue-crud>
 
@@ -45,7 +48,7 @@ export default {
         menuAlign: "center",
         labelWidth: "125",
         viewBtn: true,
-        editBtnText: '重新提交',
+        editBtnText: "重新提交",
         span: 24,
         dialogWidth: this.$dialogWidth,
         column: [
@@ -68,6 +71,7 @@ export default {
             search: true,
             multiple: true,
             editDisabled: true,
+            labelslot: true,
             dicData: Dic.find("DIC006"),
             rules: [
               {
@@ -105,7 +109,7 @@ export default {
             hide: true,
             type: "upload",
             accept: "image/png, image/jpeg",
-            listType: "picture-img",
+            listType: "picture-card",
             multiple: false,
             propsHttp: {
               home: this.$fileUrl,
@@ -130,7 +134,7 @@ export default {
             hide: true,
             type: "upload",
             accept: "image/png, image/jpeg",
-            listType: "picture-img",
+            listType: "picture-card",
             multiple: false,
             propsHttp: {
               home: this.$fileUrl,
@@ -155,7 +159,7 @@ export default {
             hide: true,
             type: "upload",
             accept: "image/png, image/jpeg",
-            listType: "picture-img",
+            listType: "picture-card",
             multiple: false,
             propsHttp: {
               home: this.$fileUrl,
@@ -229,9 +233,13 @@ export default {
           country,
           productClass,
           productModel,
-          productReport,
-          productPackingImg,
-          productInstructions,
+          productReport: productReport.map((item) => item.value).join(","),
+          productPackingImg: productPackingImg
+            .map((item) => item.value)
+            .join(","),
+          productInstructions: productInstructions
+            .map((item) => item.value)
+            .join(","),
         },
         { allData: true }
       );
