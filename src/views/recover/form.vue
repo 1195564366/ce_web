@@ -1,17 +1,8 @@
 <template>
-  <el-dialog
-    :visible="recoverShow"
-    :show-close="false"
-    title="回收业务申请"
-    width="500px"
-  >
-    <avue-form
-      :option="option"
-      :value="form"
-      @submit="onSubmit"
-      ref="form"
-    ></avue-form>
-  </el-dialog>
+  <div class="app-form"  v-if="recoverShow">
+    <h1 style="width: 100%; text-align: center;">回收业务申请</h1>
+    <avue-form :option="option" :value="form" @submit="onSubmit" ref="form"></avue-form>
+  </div>
 </template>
 
 <script>
@@ -87,18 +78,14 @@ export default {
             label: "营业执照",
             prop: "businessLicense",
             type: "upload",
-            accept: "image/png, image/jpeg",
+            accept: this.$accept,
             listType: "picture-img",
             multiple: false,
             propsHttp: {
               home: this.$fileUrl,
               res: "data",
             },
-            canvasOption: {
-              text: " ",
-              ratio: 1,
-            },
-            tip: "只能上传jpg/png图片，且不超过5M",
+            tip: "只能上传jpg/png图片、pdf文件，且不超过5M",
             action: "/common/uploadFile",
             rules: [
               {
@@ -106,21 +93,16 @@ export default {
                 message: "上传营业执照",
               },
             ],
+            uploadPreview: this.$onUploadPreview,
           },
         ],
       },
     };
   },
-  created() {
-    this.getIsUse();
-  },
   methods: {
-    async getIsUse() {
-      const result = await this.$fetchGet("/api/recover/index");
-      if (!result) {
-        this.recoverShow = true;
-        return
-      }
+    async getIsUse(result) {
+      // console.log(result);
+      this.recoverShow = true;
       const {
         companyName,
         companyAdress,
@@ -192,5 +174,9 @@ export default {
 };
 </script>
 
-<style>
+<style lang="less" scoped>
+.app-form {
+  width: 500px;
+  margin: 0 auto;
+}
 </style>

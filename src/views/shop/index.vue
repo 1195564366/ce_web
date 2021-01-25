@@ -30,13 +30,6 @@
           "
           @click="onAddProduct(scope.row)"
         >添加产品</el-button>
-        <!-- <el-button
-          type="text"
-          icon="el-icon-remove-outline"
-          style="font-size: 12px; color: #F56C6C;"
-          v-if="scope.row.status === 'adopt' && scope.row.useStatus === 'enable'"
-          @click="onClose(scope.row)"
-        >关闭店铺</el-button> -->
       </template>
 
       <template slot="expand" slot-scope="{ row }">
@@ -47,7 +40,7 @@
     <Confirm ref="confirm" />
 
     <sendGoods ref="sendGoods" />
-    <addProduct ref="addProduct" />
+    <addProduct ref="addProduct" @ok="getList" />
   </div>
 </template>
 
@@ -79,8 +72,10 @@ export default {
         labelWidth: "100",
         editBtnText: "重新提交",
         viewBtn: true,
+        editTitle: "重新提交",
         span: 24,
         dialogWidth: this.$dialogWidth,
+        dialogClickModal: false,
         column: [
           {
             label: "店铺名称",
@@ -142,7 +137,7 @@ export default {
             prop: "businessLicense",
             hide: true,
             type: "upload",
-            accept: "image/png, image/jpeg",
+            accept: this.$accept,
             listType: "picture-img",
             multiple: false,
             span: 24,
@@ -150,11 +145,7 @@ export default {
               home: this.$fileUrl,
               res: "data",
             },
-            canvasOption: {
-              text: " ",
-              ratio: 1,
-            },
-            tip: "只能上传jpg/png图片，且不超过5M",
+            tip: this.$tip,
             action: "/common/uploadFile",
             rules: [
               {
@@ -162,6 +153,7 @@ export default {
                 message: "上传营业执照",
               },
             ],
+            uploadPreview: this.$onUploadPreview,
           },
           {
             label: "联系人姓名",

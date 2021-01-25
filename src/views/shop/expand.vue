@@ -83,22 +83,21 @@ export default {
             dicData: Dic.find("DIC011"),
             editDisplay: false,
           },
+          {
+            label: "驳回原因",
+            prop: "rejectReason"
+          }
         ],
       },
     };
   },
   created() {
     this.lists = this.list.map((item) => {
-      const { id, asgl, brand, asin, status, product } = item;
       const { productName, country } = product;
       return {
-        id,
         productName,
-        asgl,
-        brand,
-        asin,
-        status,
         country,
+        ...item
       };
     });
   },

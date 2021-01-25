@@ -24,6 +24,8 @@ import axios from 'axios';
 
 import { post, get } from '@/utils/axios'
 
+import otherFileImg from '@/assets/otherFile.jpg';
+
 window.axios = axios;
 /**
  * If you don't want to use mock-server
@@ -37,8 +39,18 @@ window.axios = axios;
 Vue.prototype.$fetchPost = post;
 Vue.prototype.$fetchGet = get;
 Vue.prototype.$fileUrl = window.$fileUrl;
-Vue.prototype.$orderFileAccept = ".jpg,.jpeg,.png,.pdf,.JPG,.JPEG,.PDF";
+Vue.prototype.$accept = ".jpg,.jpeg,.png,.pdf,.JPG,.JPEG,.PDF";
 Vue.prototype.$dialogWidth = '500';
+Vue.prototype.$tip = '只能上传jpg/png图片、pdf文件，且不超过5M'
+Vue.prototype.$onUploadPreview = (file, column, done) => {
+  const { url } = file;
+  const type = url.split(".")[url.split(".").length - 1];
+  if (!["jpg", "jpeg", "png"].includes(type.toLowerCase())) {
+    window.open(url);
+  } else {
+    done();
+  }
+};
 // set ElementUI lang to EN
 Vue.use(ElementUI, { locale });
 // Vue.use(ElementUI)
@@ -49,6 +61,13 @@ Vue.use(AvueUeditor);
 // 如果想要中文版 element-ui，按如下方式声明
 
 Vue.config.productionTip = false
+
+document.addEventListener("error", function (e) {
+  const elem = e.target;
+  if (elem.tagName.toLowerCase() === "img") {
+    elem.src = otherFileImg;
+  }
+}, true);
 
 new Vue({
   el: '#app',

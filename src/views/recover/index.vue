@@ -1,7 +1,8 @@
 <template>
   <div class="app-container">
-    <Form />
+    <Form v-if="recoverShow" ref="form"/>
     <avue-crud
+      v-else
       :data="data"
       v-model="form"
       :option="option"
@@ -43,16 +44,6 @@ export default {
     Expand
   },
   data() {
-    const onUploadPreview = (file, column, done) => {
-      console.log(file, column);
-      const { url } = file;
-      const type = url.split(".")[url.split(".").length - 1];
-      if (!["jpg", "jpeg", "png"].includes(type.toLowerCase())) {
-        window.open(url);
-      } else {
-        done();
-      }
-    };
     const uploadProp = (
       label,
       prop,
@@ -82,10 +73,11 @@ export default {
             message: `上传${label}`,
           },
         ],
-        uploadPreview: onUploadPreview,
+        uploadPreview: this.$onUploadPreview,
       };
     };
     return {
+      recoverShow: true,
       data: [],
       form: {},
       option: {
@@ -132,33 +124,33 @@ export default {
           uploadProp(
             "中文营业执照",
             "licenseCn",
-            this.$orderFileAccept,
+            this.$accept,
             true,
             "picture-img"
           ),
           uploadProp(
             "英文营业执照",
             "licenseEn",
-            this.$orderFileAccept,
+            this.$accept,
             true,
             "picture-img"
           ),
           uploadProp(
             "授权书",
             "certificateAuth",
-            this.$orderFileAccept,
+            this.$accept,
             true,
             "picture-img"
           ),
-          uploadProp("商品图片", "productPicture", this.$orderFileAccept, true),
+          uploadProp("商品图片", "productPicture", this.$accept, true),
           uploadProp(
             "邮箱授权书",
             "mailCertificateAuth",
-            this.$orderFileAccept,
+            this.$accept,
             false,
             "picture-img"
           ),
-          uploadProp("其他资料", "data", this.$orderFileAccept, false),
+          uploadProp("其他资料", "data", this.$accept, false),
           {
             label: "注册号",
             prop: "registerNumber",
@@ -182,7 +174,7 @@ export default {
             prop: "certificate",
             hide: true,
             type: "upload",
-            accept: this.$orderFileAccept,
+            accept: this.$accept,
             multiple: false,
             addDisplay: false,
             span: 24,
@@ -199,7 +191,7 @@ export default {
                 message: "上传产品证书",
               },
             ],
-            uploadPreview: onUploadPreview
+            uploadPreview: this.$onUploadPreview
           },
         ],
       },
@@ -207,7 +199,7 @@ export default {
     };
   },
   mounted() {
-    this.getList();
+    // this.getList();
   },
   watch: {
     "form.business": {
@@ -232,6 +224,20 @@ export default {
       },
       immediate: true,
     },
+  },
+  async created () {
+    const result = await this.$fetchGet("/api/recover/index");
+    if (!result) {
+      this.recoverShow = true;
+      return
+    }
+    if (result.status !== '3') {
+      this.recoverShow = true;
+      this.$refs['form'].getIsUse(result);
+    } else {
+      this.recoverShow = false;
+      this.getList();
+    }
   },
   methods: {
     //

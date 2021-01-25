@@ -100,7 +100,9 @@ export default {
         brand,
       }, { allData: true });
       done();
+      console.log(result);
       if (!result.success) return;
+      this.$emit('ok')
       this.close();
     },
   },

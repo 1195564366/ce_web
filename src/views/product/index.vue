@@ -50,6 +50,7 @@ export default {
         viewBtn: true,
         editBtnText: "重新提交",
         span: 24,
+        dialogClickModal: false,
         dialogWidth: this.$dialogWidth,
         column: [
           {
@@ -108,18 +109,14 @@ export default {
             prop: "productReport",
             hide: true,
             type: "upload",
-            accept: "image/png, image/jpeg",
+            accept: this.$accept,
             listType: "picture-card",
             multiple: false,
             propsHttp: {
               home: this.$fileUrl,
               res: "data",
             },
-            canvasOption: {
-              text: " ",
-              ratio: 1,
-            },
-            tip: "只能上传jpg/png图片，且不超过5M",
+            tip: this.$tip,
             action: "/common/uploadFile",
             rules: [
               {
@@ -127,24 +124,21 @@ export default {
                 message: "上传证书/检测报告",
               },
             ],
+            uploadPreview: this.$onUploadPreview,
           },
           {
             label: "产品包装六面图",
             prop: "productPackingImg",
             hide: true,
             type: "upload",
-            accept: "image/png, image/jpeg",
+            accept: this.$accept,
             listType: "picture-card",
             multiple: false,
             propsHttp: {
               home: this.$fileUrl,
               res: "data",
             },
-            canvasOption: {
-              text: " ",
-              ratio: 1,
-            },
-            tip: "只能上传jpg/png图片，且不超过5M",
+            tip: this.$tip,
             action: "/common/uploadFile",
             rules: [
               {
@@ -152,24 +146,21 @@ export default {
                 message: "上传产品包装六面图",
               },
             ],
+            uploadPreview: this.$onUploadPreview,
           },
           {
             label: "产品说明书",
             prop: "productInstructions",
             hide: true,
             type: "upload",
-            accept: "image/png, image/jpeg",
+            accept: this.$accept,
             listType: "picture-card",
             multiple: false,
             propsHttp: {
               home: this.$fileUrl,
               res: "data",
             },
-            canvasOption: {
-              text: " ",
-              ratio: 1,
-            },
-            tip: "只能上传jpg/png图片，且不超过5M",
+            tip: this.$tip,
             action: "/common/uploadFile",
             rules: [
               {
@@ -177,6 +168,7 @@ export default {
                 message: "上传产品产品说明书",
               },
             ],
+            uploadPreview: this.$onUploadPreview,
           },
           {
             label: "审核状态",
