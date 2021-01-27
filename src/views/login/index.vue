@@ -90,6 +90,7 @@ export default {
       this.$router.push('/register')
     }
   },
+
 };
 </script>
 

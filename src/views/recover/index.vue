@@ -229,10 +229,13 @@ export default {
   },
   async created () {
     const result = await this.$fetchGet("/api/recover/index");
+    console.log(result);
     if (!result) {
       this.recoverShow = true;
+      this.$refs['form'].getIsUse({});
       return
     }
+    // if (result)
     if (result.status !== '3') {
       this.recoverShow = true;
       this.$refs['form'].getIsUse(result);
