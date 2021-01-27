@@ -8,7 +8,7 @@
 
     <breadcrumb class="breadcrumb-container" />
 
-    <div class="right-menu">
+    <!-- <div class="right-menu">
       <el-dropdown class="avatar-container" trigger="click">
         <div class="avatar-wrapper">
           <span>{{ userInfo.name || '-' }}</span>
@@ -26,7 +26,7 @@
           </el-dropdown-item>
         </el-dropdown-menu>
       </el-dropdown>
-    </div>
+    </div> -->
 
     <div class="message-wrap" @click="messageShow = true;">
       <el-badge :value="messageNum" style="margin-right: 20px;">

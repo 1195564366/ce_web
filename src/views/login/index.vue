@@ -1,6 +1,7 @@
 <template>
   <div class="login-wrap">
     <img src="~@/assets/loginBg.png" alt="" class="login-bg" />
+    <img src="~@/assets/logo.png" alt="" class="logo">
     <div class="login-form">
       <div class="login-header">
         <div
@@ -98,6 +99,13 @@ export default {
     width: 100vw;
     height: 100vh;
     background: #f6f6f8;
+    .logo {
+      widows: 100px;
+      height: 100px;
+      position: fixed;
+      top: calc(50% - 360px);
+      left: calc(50% - 50px);
+    }
   }
   &-bg {
     width: 100vw;

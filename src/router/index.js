@@ -69,7 +69,7 @@ export const constantRoutes = [
       path: 'index',
       name: 'index',
       component: () => import('@/views/shop'),
-      meta: { title: '我的店铺', icon: 'analysis' }
+      meta: { title: '我的店铺', icon: 'shop' }
     }]
   },
 
@@ -81,7 +81,7 @@ export const constantRoutes = [
       path: 'index',
       name: 'index',
       component: () => import('@/views/product'),
-      meta: { title: '我的产品', icon: 'analysis' }
+      meta: { title: '我的产品', icon: 'product' }
     }]
   },
 
@@ -93,7 +93,7 @@ export const constantRoutes = [
       path: 'index',
       name: 'index',
       component: () => import('@/views/sendGoods'),
-      meta: { title: '我的发货', icon: 'analysis' }
+      meta: { title: '我的发货', icon: 'sendGoods' }
     }]
   },
 
@@ -105,7 +105,7 @@ export const constantRoutes = [
       path: 'index',
       name: 'index',
       component: () => import('@/views/bill'),
-      meta: { title: '我的账单', icon: 'analysis' }
+      meta: { title: '我的账单', icon: 'bill' }
     }]
   },
 
@@ -117,7 +117,7 @@ export const constantRoutes = [
       path: 'index',
       name: 'index',
       component: () => import('@/views/recover'),
-      meta: { title: '我的回收', icon: 'analysis' }
+      meta: { title: '我的回收', icon: 'recover' }
     }]
   },
 
