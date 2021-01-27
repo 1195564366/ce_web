@@ -74,8 +74,8 @@ export default {
         viewBtn: true,
         editTitle: "重新提交",
         span: 24,
-        dialogWidth: this.$dialogWidth,
         dialogClickModal: false,
+        dialogWidth: this.$dialogWidth,
         column: [
           {
             label: "店铺名称",

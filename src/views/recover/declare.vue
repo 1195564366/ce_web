@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="申报" width="500px" :visible="show" @close="onClose">
+  <el-dialog title="申报" width="500px" :visible="show" @close="onClose" :close-on-click-modal="false">
     <el-tag type="danger">
       请于本月10日前完成上月的销售数据统计并上传本系统，否则会产生相应罚款，如多次违反我司将立即终止委托关系。
     </el-tag>

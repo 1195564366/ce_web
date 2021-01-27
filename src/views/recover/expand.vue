@@ -29,8 +29,9 @@ export default {
         refreshBtn: false,
         span: 24,
         editBtn: false,
-        // editBtnText: "重新提交",
         labelWidth: "125",
+        dialogClickModal: false,
+        uploadPreview: this.$onUploadPreview,
         dialogWidth: this.$dialogWidth,
         column: [
           {

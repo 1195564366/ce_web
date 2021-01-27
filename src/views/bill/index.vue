@@ -30,6 +30,9 @@ export default {
         labelWidth: "100",
         menu: false,
         addBtn: false,
+        dialogClickModal: false,
+        span: 24,
+        dialogWidth: this.$dialogWidth,
         column: [
           {
             label: "账单号",

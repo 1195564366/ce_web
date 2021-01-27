@@ -30,6 +30,7 @@ export default {
         span: 24,
         editBtnText: "重新提交",
         labelWidth: "125",
+        dialogClickModal: false,
         dialogWidth: this.$dialogWidth,
         column: [
           {
@@ -93,7 +94,7 @@ export default {
   },
   created() {
     this.lists = this.list.map((item) => {
-      const { productName, country } = product;
+      const { product: {productName, country} } = item;
       return {
         productName,
         country,

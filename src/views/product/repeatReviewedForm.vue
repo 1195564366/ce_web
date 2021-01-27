@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="复审提交" :visible="show" width="500px" @close="close">
+  <el-dialog title="复审提交" :visible="show" width="500px" @close="close" :close-on-click-modal="false">
     <avue-form :option="option" v-model="form" @submit="onSubmit" @reset-change="resetChange" ref="form"></avue-form>
   </el-dialog>
 </template>

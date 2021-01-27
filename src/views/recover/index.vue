@@ -82,12 +82,14 @@ export default {
       form: {},
       option: {
         expand: true,
-        dialogWidth: this.$dialogWidth,
         span: 24,
         editBtn: false,
         delBtn: false,
         viewBtn: true,
         labelWidth: "120",
+
+        dialogClickModal: false,
+        dialogWidth: this.$dialogWidth,
         column: [
           {
             label: "国家",

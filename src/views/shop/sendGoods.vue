@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="发货" :visible="show" @close="close" width="1220px">
+  <el-dialog title="发货" :visible="show" @close="close" width="1220px" :close-on-click-modal="false">
     <el-tag type="danger" style="margin-bottom: 20px;">提交之前，请确保已下载doc文件和欧代证书</el-tag>
     <el-form :inline="true" :model="form" ref="form">
       <el-card v-for="(item, index) in form.body" :key="index">
@@ -102,7 +102,6 @@ export default {
         type === "doc"
           ? `${productName}doc文件.${fileType}`
           : `${productName}欧代证书.${fileType}`;
-      console.log(fileName);
       const loading = this.$loading({
         lock: true,
         text: "文件下载中",

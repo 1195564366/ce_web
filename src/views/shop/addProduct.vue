@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="添加产品" :visible="show" @close="close" width="500px">
+  <el-dialog title="添加产品" :visible="show" @close="close" width="500px" :close-on-click-modal="false">
     <avue-form :option="option" v-model="form" @submit="onSubmit" ref="form"/>
   </el-dialog>
 </template>
@@ -32,6 +32,16 @@ export default {
             dicData: [],
           },
           {
+            label: "品牌",
+            prop: "brand",
+            rules: [
+              {
+                required: true,
+                message: "输入品牌",
+              },
+            ],
+          },
+          {
             label: "亚马逊发货链接",
             prop: "asgl",
             type: "url",
@@ -40,16 +50,6 @@ export default {
               {
                 required: true,
                 message: "输入亚马逊发货链接",
-              },
-            ],
-          },
-          {
-            label: "品牌",
-            prop: "brand",
-            rules: [
-              {
-                required: true,
-                message: "输入品牌",
               },
             ],
           },
