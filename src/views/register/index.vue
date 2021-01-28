@@ -26,6 +26,13 @@
               <template slot="prepend">+86</template>
             </el-input>
           </el-form-item>
+          <el-form-item prop="code">
+            <el-input placeholder="输入验证码" v-model="form.code" maxlength="4">
+              <span slot="suffix" @click="changeCode">
+                <Identify :identifyCode="identifyCode" />
+              </span>
+            </el-input>
+          </el-form-item>
           <el-form-item prop="password">
             <el-input
               placeholder="请输入密码"
@@ -57,6 +64,8 @@
 </template>
 
 <script>
+import Identify from "../identify";
+
 const phone = phone => {
   const reg = /^[1][3,4,5,7,8,9][0-9]{9}$/
   if (!reg.test(phone)) {
@@ -67,6 +76,9 @@ const phone = phone => {
 }
 
 export default {
+  components: {
+    Identify,
+  },
   data() {
     const validatorPhone = (rule, value, callback) => {
       if (!value) {
@@ -99,9 +111,12 @@ export default {
       }
     };
     return {
+      identifyCodes: "1234567890",
+      identifyCode: "",
       form: {
         type: "OUDAI",
         phone: '',
+        code: null,
         password: '',
         password1: ''
       },
@@ -112,6 +127,10 @@ export default {
             trigger: "change",
           },
         ],
+        code: [{
+          required: true,
+          message: "输入验证码"
+        }],
         password: [
           {
             validator: validatorPwd,
@@ -132,14 +151,40 @@ export default {
       return this.$store.state.user.source
     }
   },
+  created () {
+    this.changeCode();
+  },
   methods: {
+    changeCode() {
+      this.identifyCode = "";
+      this.makeCode(this.identifyCodes, 4);
+    },
+    randomNum(min, max) {
+      return Math.floor(Math.random() * (max - min) + min);
+    },
+    refreshCode() {
+      this.identifyCode = "";
+      this.makeCode(this.identifyCodes, 4);
+    },
+    makeCode(o, l) {
+      for (let i = 0; i < l; i++) {
+        this.identifyCode += this.identifyCodes[
+          this.randomNum(0, this.identifyCodes.length)
+        ];
+      }
+      console.log(this.identifyCode);
+    },
     typeChange(type) {
       this.form.type = type;
     },
     async register() {
       this.$refs['form'].validate(async valid => {
         if (!valid) return;
-        const { type, phone, password } = this.form;
+        const { type, phone, password, code } = this.form;
+        if (code !== this.identifyCode) {
+          this.$message.warning('验证码不正确');
+          return
+        }
         const result = await this.$fetchPost("/api/register", {
           type,
           phone,

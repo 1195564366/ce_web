@@ -1,14 +1,10 @@
 <template>
   <div class="login-wrap">
     <img src="~@/assets/loginBg.png" alt="" class="login-bg" />
-    <img src="~@/assets/logo.png" alt="" class="logo">
+    <img src="~@/assets/logo.png" alt="" class="logo" />
     <div class="login-form">
       <div class="login-header">
-        <div
-          class="login-header-item active"
-        >
-          密码登陆
-        </div>
+        <div class="login-header-item active">密码登陆</div>
       </div>
       <div class="login-main">
         <el-form :model="form" :rules="rules" ref="form">
@@ -18,6 +14,13 @@
               prefix-icon="el-icon-user-solid"
               v-model="form.phone"
             >
+            </el-input>
+          </el-form-item>
+          <el-form-item prop="code">
+            <el-input placeholder="输入验证码" v-model="form.code" maxlength="4">
+              <span slot="suffix" @click="changeCode">
+                <Identify :identifyCode="identifyCode" />
+              </span>
             </el-input>
           </el-form-item>
           <el-form-item prop="password">
@@ -41,56 +44,97 @@
 
 <script>
 import { setToken } from "@/utils/auth";
+import Identify from "../identify";
 
 export default {
+  components: {
+    Identify,
+  },
   data() {
     return {
+      identifyCodes: "1234567890",
+      identifyCode: "",
       form: {
-        phone: '',
-        password: ''
+        phone: "",
+        code: null,
+        password: "",
       },
       rules: {
-        phone: [{
-          required: true,
-          message: '输入手机号'
-        }],
-        password: [{
-          required: true,
-          message: '输入密码'
-        }]
-      }
+        phone: [
+          {
+            required: true,
+            message: "输入手机号",
+          },
+        ],
+        code: [
+          {
+            required: true,
+            message: "输入验证码",
+          },
+        ],
+        password: [
+          {
+            required: true,
+            message: "输入密码",
+          },
+        ],
+      },
     };
   },
-  created () {
+  created() {
     let { source } = this.$route.query;
     if (!source) {
-      source = 'CE'
+      source = "CE";
     }
-    console.log(this.$route)
-    this.$store.commit('user/SET_SOURCE', source);
+    console.log(this.$route);
+    this.$store.commit("user/SET_SOURCE", source);
+
+    this.changeCode();
   },
   methods: {
+    changeCode() {
+      this.identifyCode = "";
+      this.makeCode(this.identifyCodes, 4);
+    },
+    randomNum(min, max) {
+      return Math.floor(Math.random() * (max - min) + min);
+    },
+    refreshCode() {
+      this.identifyCode = "";
+      this.makeCode(this.identifyCodes, 4);
+    },
+    makeCode(o, l) {
+      for (let i = 0; i < l; i++) {
+        this.identifyCode += this.identifyCodes[
+          this.randomNum(0, this.identifyCodes.length)
+        ];
+      }
+      console.log(this.identifyCode);
+    },
     async login() {
-      this.$refs['form'].validate(async valid => {
+      this.$refs["form"].validate(async (valid) => {
         if (!valid) return;
-        const { phone, password } = this.form;
+        const { phone, password, code } = this.form;
+        if (code !== this.identifyCode) {
+          this.$message.warning('验证码不正确');
+          return
+        }
         const result = await this.$fetchPost("/api/login", {
           phone,
           password,
         });
-        this.$store.commit('user/SET_USERINFO', result);
-        this.$store.commit('user/SET_TOKEN', result.token);
+        this.$store.commit("user/SET_USERINFO", result);
+        this.$store.commit("user/SET_TOKEN", result.token);
         setToken(result.token);
         console.log(result);
-        this.$router.push('/');
-        this.$message.success('登陆成功')
-      })
+        this.$router.push("/");
+        this.$message.success("登陆成功");
+      });
     },
-    toRegister () {
-      this.$router.push('/register')
-    }
+    toRegister() {
+      this.$router.push("/register");
+    },
   },
-
 };
 </script>
 

@@ -139,14 +139,18 @@ export default {
           required: true,
           message: "输入姓名"
         }]
-      }
+      },
+      timer: null
     };
   },
   created() {
     this.getMessageList();
-    setInterval(() => {
+    this.timer = setInterval(() => {
       this.getMessageList();
     }, 30000);
+  },
+  beforeDestroy () {
+    clearInterval(this.timer);
   },
   computed: {
     ...mapGetters(["sidebar", "avatar", "name"]),
