@@ -58,7 +58,7 @@ export default {
         hide: true,
         type: "upload",
         accept,
-        multiple: false,
+        multiple: true,
         span: 24,
         listType,
         propsHttp: {
@@ -177,7 +177,7 @@ export default {
             hide: true,
             type: "upload",
             accept: this.$accept,
-            multiple: false,
+            multiple: true,
             addDisplay: false,
             span: 24,
             listType: "picture-card",
@@ -231,6 +231,7 @@ export default {
     const result = await this.$fetchGet("/api/recover/index");
     if (!result) {
       this.recoverShow = true;
+      this.$refs['form'].getIsUse({});
       return
     }
     if (result.status !== '3') {

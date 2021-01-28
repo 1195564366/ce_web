@@ -111,7 +111,7 @@ export default {
             type: "upload",
             accept: this.$accept,
             listType: "picture-card",
-            multiple: false,
+            multiple: true,
             propsHttp: {
               home: this.$fileUrl,
               res: "data",
@@ -133,7 +133,7 @@ export default {
             type: "upload",
             accept: this.$accept,
             listType: "picture-card",
-            multiple: false,
+            multiple: true,
             propsHttp: {
               home: this.$fileUrl,
               res: "data",
@@ -155,7 +155,7 @@ export default {
             type: "upload",
             accept: this.$accept,
             listType: "picture-card",
-            multiple: false,
+            multiple: true,
             propsHttp: {
               home: this.$fileUrl,
               res: "data",
