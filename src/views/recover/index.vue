@@ -1,6 +1,6 @@
 <template>
   <div class="app-container">
-    <Form v-if="recoverShow" ref="form"/>
+    <Form v-if="recoverShow" ref="form" />
     <avue-crud
       v-else
       :data="data"
@@ -11,6 +11,9 @@
       @refresh-change="getList"
       @selection-change="selectionChange"
     >
+      <template slot="menuRight">
+        <el-button type="primary" size="small" @click="onRecoverView">回收资料</el-button>
+      </template>
       <template slot="menu" slot-scope="{ row }">
         <el-button
           type="text"
@@ -26,7 +29,18 @@
       </template>
     </avue-crud>
 
-    <Declare ref="declare" @ok="getList"/>
+    <Declare ref="declare" @ok="getList" />
+    <el-dialog
+      title="回收资料"
+      :visible="recoverShow1"
+      width="500px"
+      @close="recoverShow1 = false"
+      :close-on-click-modal="false"
+    >
+      <avue-form ref="form" v-model="recoverData" :option="option1">
+
+      </avue-form>
+    </el-dialog>
   </div>
 </template>
 
@@ -41,7 +55,7 @@ export default {
   components: {
     Form,
     Declare,
-    Expand
+    Expand,
   },
   data() {
     const uploadProp = (
@@ -77,6 +91,67 @@ export default {
       };
     };
     return {
+      option1: {
+        span: 24,
+        menuBtn: false,
+        column: [{
+            label: "公司名称",
+            prop: "companyName",
+            detail: true,
+            rules: [
+              {
+                required: true,
+                message: "输入公司名称",
+              },
+            ],
+          },
+          {
+            label: "公司地址",
+            prop: "companyAdress",
+            detail: true,
+            rules: [
+              {
+                required: true,
+                message: "输入公司地址",
+              },
+            ],
+          },
+          {
+            label: "公司注册号",
+            prop: "companyRegisterNum",
+            detail: true,
+            rules: [
+              {
+                required: true,
+                message: "输入公司注册号",
+              },
+            ],
+          },
+          {
+            label: "营业执照",
+            prop: "businessLicense",
+            type: "upload",
+            detail: true,
+            accept: this.$accept,
+            listType: "picture-img",
+            multiple: false,
+            propsHttp: {
+              home: this.$fileUrl,
+              res: "data",
+            },
+            tip: "只能上传jpg/png图片、pdf文件，且不超过5M",
+            action: "/common/uploadFile",
+            rules: [
+              {
+                required: true,
+                message: "上传营业执照",
+              },
+            ],
+            uploadPreview: this.$onUploadPreview,
+          },]
+      },
+      recoverShow1: false,
+      recoverData: {},
       recoverShow: true,
       data: [],
       form: {},
@@ -166,10 +241,12 @@ export default {
             hide: true,
             dicData: [],
             addDisplay: false,
-            rules: [{
-              required: true,
-              message: "选择申报分类"
-            }]
+            rules: [
+              {
+                required: true,
+                message: "选择申报分类",
+              },
+            ],
           },
           {
             label: "产品证书",
@@ -193,7 +270,7 @@ export default {
                 message: "上传产品证书",
               },
             ],
-            uploadPreview: this.$onUploadPreview
+            uploadPreview: this.$onUploadPreview,
           },
         ],
       },
@@ -207,7 +284,10 @@ export default {
     "form.business": {
       handler(val) {
         const application = this.findObject(this.option.column, "application");
-        const declareClass = this.findObject(this.option.column, "declareClass");
+        const declareClass = this.findObject(
+          this.option.column,
+          "declareClass"
+        );
 
         if (val === "battery") {
           application.display = true;
@@ -217,34 +297,45 @@ export default {
               message: "上传申请表",
             },
           ];
-          declareClass.dicData = Dic.find('DIC017');
+          declareClass.dicData = Dic.find("DIC017");
         } else {
           application.display = false;
           application.rules = [];
-          declareClass.dicData = Dic.find('DIC016');
+          declareClass.dicData = Dic.find("DIC016");
         }
       },
       immediate: true,
     },
   },
-  async created () {
+  async created() {
+    const loading = this.$loading({
+      lock: true,
+      text: 'Loading',
+      spinner: 'el-icon-loading',
+      background: 'rgba(0, 0, 0, 0.7)'
+    });
     const result = await this.$fetchGet("/api/recover/index");
+    loading.close();
     console.log(result);
     if (!result) {
       this.recoverShow = true;
-      this.$refs['form'].getIsUse({});
-      return
+      this.$refs["form"].getIsUse({});
+      return;
     }
-    // if (result)
-    if (result.status !== '3') {
+    if (result.status !== "3") {
       this.recoverShow = true;
-      this.$refs['form'].getIsUse(result);
+      this.$refs["form"].getIsUse(result);
     } else {
+      this.recoverData = result;
       this.recoverShow = false;
       this.getList();
     }
   },
   methods: {
+    onRecoverView () {
+      this.recoverShow1 = true;
+      console.log(1111, this.recoverData);
+    },
     //
     selectionChange(selection) {
       console.log(selection);
@@ -291,7 +382,7 @@ export default {
         {
           country,
           business,
-          application: business === 'weee' ? null : application, // 单
+          application: business === "weee" ? null : application, // 单
           licenseCn, // 单
           licenseEn, // 单
           certificateAuth, // 单
