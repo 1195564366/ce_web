@@ -4,7 +4,7 @@
     <img src="~@/assets/logo.png" alt="" class="logo" />
     <div class="login-form">
       <div class="login-header">
-        <div class="login-header-item active">密码登陆</div>
+        <div class="login-header-item active">登录</div>
       </div>
       <div class="login-main">
         <el-form :model="form" :rules="rules" ref="form">
@@ -34,8 +34,9 @@
           </el-form-item>
         </el-form>
       </div>
+      <div class="login-btn" @click="login">立即登录</div>
       <div class="login-footer">
-        <div class="login-footer-item" @click="login">立即登陆</div>
+        <div class="login-footer-item" @click="toForgot">找回密码</div>
         <div class="login-footer-item" @click="toRegister">注册账号</div>
       </div>
     </div>
@@ -128,8 +129,12 @@ export default {
         setToken(result.token);
         console.log(result);
         this.$router.push("/");
-        this.$message.success("登陆成功");
+        this.$message.success("登录成功");
       });
+    },
+    toForgot () {
+      console.log(123)
+      this.$router.push("/forgot");
     },
     toRegister() {
       this.$router.push("/register");
@@ -182,6 +187,15 @@ export default {
       }
     }
   }
+  &-btn {
+    height: 50px;
+    line-height: 50px;
+    text-align: center;
+    background: #318bfa;
+    color: #ffffff;
+    font-size: 16px;
+    cursor: pointer;
+  }
   &-footer {
     display: flex;
     &-item {
@@ -193,7 +207,7 @@ export default {
       color: #ffffff;
       font-size: 16px;
       cursor: pointer;
-      margin-top: 40px;
+      margin-top: 30px;
       &:first-child {
         margin-right: 40px;
       }
