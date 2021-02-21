@@ -114,6 +114,7 @@ export default {
             label: "法人身份证",
             prop: "legalPrsonCard",
             hide: true,
+            maxlength: 17,
             rules: [
               {
                 required: true,
