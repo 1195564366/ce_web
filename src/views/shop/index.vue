@@ -120,6 +120,11 @@ export default {
                 required: true,
                 message: "输入法人身份证",
               },
+              {
+                min: 17,
+                max: 17,
+                message: "身份证应为17位"
+              }
             ],
           },
           {
