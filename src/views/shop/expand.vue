@@ -1,11 +1,22 @@
 <template>
   <div class="expand-product-wrap">
     <avue-crud
+      v-model="form"
       :option="option"
       :data="lists"
       @row-update="rowUpdate"
       :permission="getPermission"
     >
+    <template slot="status" slot-scope="{row: { status }}">
+      <el-tag v-if="status === '5'" type="success">通过</el-tag>
+      <el-tag v-else-if="status === '4'" type="danger">驳回</el-tag>
+      <el-tag v-else>待审核</el-tag>
+    </template>
+    <template slot="statusForm" slot-scope="{row: { status }}">
+      <el-tag v-if="status === '5'" type="success">通过</el-tag>
+      <el-tag v-else-if="status === '4'" type="danger">驳回</el-tag>
+      <el-tag v-else>待审核</el-tag>
+    </template>
     </avue-crud>
   </div>
 </template>
@@ -22,6 +33,7 @@ export default {
   },
   data() {
     return {
+      form: {},
       lists: [],
       option: {
         addBtn: false,
@@ -32,6 +44,7 @@ export default {
         labelWidth: "125",
         dialogClickModal: false,
         dialogWidth: this.$dialogWidth,
+        viewBtn: true,
         column: [
           {
             label: "产品名称",
@@ -83,14 +96,32 @@ export default {
             type: "select",
             dicData: Dic.find("DIC011"),
             editDisplay: false,
+            slot: true,
+            formSlot: true
           },
           {
             label: "驳回原因",
-            prop: "rejectReason"
+            type: "textarea",
+            prop: "rejectReason",
+            hide: true,
+            viewdDisplay: false,
+            editDisplay: false
           }
         ],
       },
     };
+  },
+  watch: {
+    "form.status": {
+      handler (val) {
+        const rejectReason = this.findObject(
+          this.option.column,
+          "rejectReason"
+        );
+        rejectReason.viewdDisplay = val === '4';
+      },
+      immediate: true
+    }
   },
   created() {
     this.lists = this.list.map((item) => {
@@ -104,7 +135,7 @@ export default {
   },
   methods: {
     getPermission(key, row, index) {
-      if (key === "menu") return true;
+      if (['menu', 'viewBtn'].includes(key)) return true;
       const { status } = row;
       if (key === "editBtn" && status === "4") return true;
       return false;

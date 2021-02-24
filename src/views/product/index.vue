@@ -1,6 +1,7 @@
 <template>
   <div class="app-container">
     <avue-crud
+      v-model="form"
       :data="data"
       :option="option"
       :table-loading="tableLoading"
@@ -13,6 +14,16 @@
       @search-change="searchChange"
       :permission="getPermission"
     >
+      <template slot="status" slot-scope="{row: { status }}">
+        <el-tag v-if="status === '5'" type="success">通过</el-tag>
+        <el-tag v-else-if="status === '4'" type="danger">驳回</el-tag>
+        <el-tag v-else>待审核</el-tag>
+      </template>
+      <template slot="statusForm" slot-scope="{row: { status }}">
+        <el-tag v-if="status === '5'" type="success">通过</el-tag>
+        <el-tag v-else-if="status === '4'" type="danger">驳回</el-tag>
+        <el-tag v-else>待审核</el-tag>
+      </template>
       <template slot="countryLabel">
         <span>国家（多选）：</span>
       </template>
@@ -40,6 +51,7 @@ export default {
   mixins: [Page],
   data() {
     return {
+      form: {},
       search: {},
       tableLoading: false,
       data: [],
@@ -177,10 +189,30 @@ export default {
             dicData: Dic.find("DIC008"),
             editDisplay: false,
             addDisplay: false,
+            slot: true,
+            formSlot: true
+          },
+          {
+            label: "驳回原因",
+            prop: "rejectReason",
+            type: "textarea",
+            hide: true,
+            editDisplay: false,
+            addDisplay: false,
+            viewDisplay: false,
           },
         ],
       },
     };
+  },
+  watch: {
+    "form.status": {
+      handler(val) {
+        const rejectReason = this.findObject(this.option.column, "rejectReason");
+        rejectReason.viewDisplay = val === '4';
+      },
+      immediate: true
+    }
   },
   mounted() {
     this.getList();

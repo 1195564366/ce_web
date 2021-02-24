@@ -13,6 +13,16 @@
       @search-change="searchChange"
       :permission="getPermission"
     >
+      <template slot="status" slot-scope="{row: { status }}">
+        <el-tag v-if="status === 'waitReviewed'">待审核</el-tag>
+        <el-tag v-if="status === 'adopt'" type="success">通过</el-tag>
+        <el-tag v-if="status === 'reject'" type="danger">驳回</el-tag>
+      </template>
+      <template slot="statusForm" slot-scope="{row: { status }}">
+        <el-tag v-if="status === 'waitReviewed'">待审核</el-tag>
+        <el-tag v-if="status === 'adopt'" type="success">通过</el-tag>
+        <el-tag v-if="status === 'reject'" type="danger">驳回</el-tag>
+      </template>
       <template slot="menu" slot-scope="scope">
         <el-button
           type="text"
@@ -187,6 +197,8 @@ export default {
             label: "审核状态",
             prop: "status",
             type: "select",
+            slot: true,
+            formSlot: true,
             search: true,
             addDisplay: false,
             editDisplay: false,
