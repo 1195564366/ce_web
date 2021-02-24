@@ -13,6 +13,17 @@
               placeholder="请输入手机号"
               prefix-icon="el-icon-user-solid"
               v-model="form.phone"
+              type="text"
+            >
+            </el-input>
+          </el-form-item>
+          
+          <el-form-item prop="password">
+            <el-input
+              placeholder="请输入密码"
+              prefix-icon="el-icon-lock"
+              v-model="form.password"
+              type="password"
             >
             </el-input>
           </el-form-item>
@@ -21,15 +32,6 @@
               <span slot="suffix" @click="changeCode">
                 <Identify :identifyCode="identifyCode" />
               </span>
-            </el-input>
-          </el-form-item>
-          <el-form-item prop="password">
-            <el-input
-              placeholder="请输入密码"
-              prefix-icon="el-icon-lock"
-              v-model="form.password"
-              type="password"
-            >
             </el-input>
           </el-form-item>
         </el-form>
