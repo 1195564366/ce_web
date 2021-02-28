@@ -186,11 +186,17 @@ export default {
             label: "联系人电话",
             prop: "contactPhone",
             hide: true,
+            maxlength: 11,
             rules: [
               {
                 required: true,
                 message: "输入联系人电话",
               },
+              {
+                min: 11,
+                max: 11,
+                message: "电话应为11位"
+              }
             ],
           },
           {

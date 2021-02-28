@@ -17,6 +17,12 @@
       <el-tag v-else-if="status === '4'" type="danger">驳回</el-tag>
       <el-tag v-else>待审核</el-tag>
     </template>
+    <template slot="oudai" slot-scope="{row}">
+      <el-tag type="warning" style="cursor: pointer;" @click="downloadFile('oudai', row)" v-if="row.ouDaiCe">欧代证书</el-tag>
+    </template>
+    <template slot="doc" slot-scope="{row}">
+      <el-tag style="cursor: pointer;" @click="downloadFile('doc', row)" v-if="row.doc">doc文件</el-tag>
+    </template>
     </avue-crud>
   </div>
 </template>
@@ -91,6 +97,20 @@ export default {
             ],
           },
           {
+            label: "欧代证书",
+            prop: "oudai",
+            editDisplay: false,
+            slot: true,
+            viewDisplay: false
+          },
+          {
+            label: "doc文件",
+            prop: "doc",
+            slot: true,
+            viewDisplay: false,
+            editDisplay: false
+          },
+          {
             label: "审核状态",
             prop: "status",
             type: "select",
@@ -134,6 +154,45 @@ export default {
     });
   },
   methods: {
+    downloadFile(type, row) {
+      console.log(row);
+      const { doc, ouDaiCe, product } = row;
+      const { productName } = product;
+      const filePath = type === "doc" ? doc : ouDaiCe;
+      if (!filePath) return this.$message.warning('文件不存在，请联系管理员')
+      console.log(filePath);
+      const fileType = filePath.split(".")[filePath.split(".").length - 1];
+      console.log(fileType);
+      const fileName =
+        type === "doc"
+          ? `${productName}doc文件.${fileType}`
+          : `${productName}欧代证书.${fileType}`;
+      const loading = this.$loading({
+        lock: true,
+        text: "文件下载中",
+        spinner: "el-icon-loading",
+        background: "rgba(0, 0, 0, 0.7)",
+      });
+      axios({
+        url: `common/downloadFile?filePath=${filePath}`,
+        method: "get",
+        responseType: "blob",
+      }).then((res) => {
+        if ("download" in document.createElement("a")) {
+          let url = window.URL.createObjectURL(res.data);
+          let link = document.createElement("a");
+          link.style.display = "none";
+          link.href = url;
+          link.setAttribute("download", `${fileName}`);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          loading.close();
+        } else {
+          navigator.msSaveBlob(res.data, `${fileName}`);
+        }
+      });
+    },
     getPermission(key, row, index) {
       if (['menu', 'viewBtn'].includes(key)) return true;
       const { status } = row;

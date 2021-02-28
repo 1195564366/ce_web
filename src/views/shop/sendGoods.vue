@@ -1,5 +1,5 @@
 <template>
-  <el-dialog title="发货" :visible="show" @close="close" width="1220px" :close-on-click-modal="false">
+  <el-dialog title="发货" :visible="show" @close="close" width="1300px" :close-on-click-modal="false">
     <el-tag type="danger" style="margin-bottom: 20px;">提交之前，请确保已下载doc文件和欧代证书</el-tag>
     <el-form :inline="true" :model="form" ref="form">
       <el-card v-for="(item, index) in form.body" :key="index">
@@ -53,6 +53,9 @@
         <el-form-item>
           <el-tag type="warning" style="cursor: pointer;" @click="downloadFile('oudai', index)">欧代证书</el-tag>
         </el-form-item>
+        <el-form-item>
+          <el-button size="mini" type="danger" v-if="form.body.length > 1"  @click="del(index)">删除</el-button>
+        </el-form-item>
       </el-card>
       <el-form-item class="sendform-footer">
         <el-button type="primary" @click="submit" :disabled="loading" :loading="loading">提交</el-button>
@@ -64,6 +67,8 @@
 </template>
 
 <script>
+import { Dic } from '@utils';
+
 export default {
   data() {
     return {
@@ -83,6 +88,10 @@ export default {
     };
   },
   methods: {
+    del (index) {
+      console.log(index)
+      this.form.body.splice(index, 1)
+    },
     downloadFile(type, index) {
       const { body } = this.form;
       if (!body[index].pid) {
@@ -137,10 +146,10 @@ export default {
       this.product = result.map((item) => {
         const { product, asin, doc, ouDaiCe } = item;
         const spid = item.id;
-        const { productName, id } = product;
+        const { productName, id, country } = product;
         return {
           spid,
-          productName,
+          productName: `${productName}（${Dic.findFilter('DIC006', country)}）`,
           id,
           asin,
           doc,
