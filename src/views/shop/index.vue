@@ -13,6 +13,14 @@
       @search-change="searchChange"
       :permission="getPermission"
     >
+      <template slot="shopLink" slot-scope="{row: { shopLink }}">
+        <el-tooltip effect="dark" :content="shopLink" placement="top">
+          <div slot="content">
+            <el-link type="primary" :href="shopLink" target="_blank">{{ shopLink }}</el-link>
+          </div>
+          <el-link type="primary" :href="shopLink" target="_blank" :underline="false">访问</el-link>
+        </el-tooltip>
+      </template>
       <template slot="status" slot-scope="{row: { status }}">
         <el-tag v-if="status === 'waitReviewed'">待审核</el-tag>
         <el-tag v-if="status === 'adopt'" type="success">通过</el-tag>
@@ -70,6 +78,11 @@ export default {
     expand,
   },
   mixins: [Page],
+  filters: {
+    linkEllipsis (link) {
+      return link.length > 15 ? link.substring(0, 15) + '...' : link
+    }
+  },
   data() {
     return {
       search: {},
@@ -103,6 +116,7 @@ export default {
             prop: "shopLink",
             type: "url",
             alone: true,
+            slot: true,
             rules: [
               {
                 required: true,

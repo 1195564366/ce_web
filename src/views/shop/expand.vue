@@ -18,10 +18,10 @@
       <el-tag v-else>待审核</el-tag>
     </template>
     <template slot="oudai" slot-scope="{row}">
-      <el-tag type="warning" style="cursor: pointer;" @click="downloadFile('oudai', row)" v-if="row.ouDaiCe">欧代证书</el-tag>
+      <el-tag type="warning" style="cursor: pointer;" @click="downloadFile('oudai', row)" v-if="row.ouDaiCe">欧代证书下载</el-tag>
     </template>
     <template slot="doc" slot-scope="{row}">
-      <el-tag style="cursor: pointer;" @click="downloadFile('doc', row)" v-if="row.doc">doc文件</el-tag>
+      <el-tag style="cursor: pointer;" @click="downloadFile('doc', row)" v-if="row.doc">doc文件下载</el-tag>
     </template>
     </avue-crud>
   </div>
